@@ -69,9 +69,10 @@ prompt_end() {
 # Context: user@hostname (who am I and where am I)
 prompt_context() {
   if [[ -n "$SSH_CLIENT" ]]; then
-    prompt_segment magenta white "%{$fg_bold[white]%(!.%{%F{white}%}.)%}$USER@%m%{$fg_no_bold[white]%}"
+    # prompt_segment magenta white "%{$fg_no_bold[white]%(!.%{%F{white}%}.)%}$USER@%m%{$fg_no_bold[white]%}"
+    prompt_segment magenta white
   else
-    prompt_segment yellow magenta "%{$fg_bold[magenta]%(!.%{%F{magenta}%}.)%}@$USER%{$fg_no_bold[magenta]%}"
+    prompt_segment yellow magenta "%{$fg_no_bold[magenta]%(!.%{%F{magenta}%}.)%}@$USER%{$fg_no_bold[magenta]%}"
   fi
 }
 
@@ -122,7 +123,7 @@ prompt_battery() {
       else
         prompt_segment red white
       fi
-      echo -n "%{$fg_bold[white]%}$HEART$(battery_pct_remaining)%%%{$fg_no_bold[white]%}"
+      echo -n "%{$fg_no_bold[white]%}$HEART$(battery_pct_remaining)%%%{$fg_no_bold[white]%}"
     fi
   fi
 
@@ -161,7 +162,7 @@ prompt_battery() {
       else
         prompt_segment red white
       fi
-      echo -n "%{$fg_bold[white]%}$HEART$(battery_pct_remaining)%%%{$fg_no_bold[white]%}"
+      echo -n "%{$fg_no_bold[white]%}$HEART$(battery_pct_remaining)%%%{$fg_no_bold[white]%}"
     fi
 
   fi
@@ -262,12 +263,12 @@ prompt_git() {
     if [[ $commits_ahead -gt 0 && $commits_behind -gt 0 ]]; then has_diverged=true; fi
     if [[ $has_diverged == false && $commits_ahead -gt 0 ]]; then
       if [[ $bgclr == 'red' || $bgclr == 'magenta' ]] then
-        to_push=" $fg_bold[white]↑$commits_ahead$fg_bold[$fgclr]"
+        to_push=" $fg_no_bold[white]↑$commits_ahead$fg_no_bold[$fgclr]"
       else
-        to_push=" $fg_bold[black]↑$commits_ahead$fg_bold[$fgclr]"
+        to_push=" $fg_no_bold[black]↑$commits_ahead$fg_no_bold[$fgclr]"
       fi
     fi
-    if [[ $has_diverged == false && $commits_behind -gt 0 ]]; then to_pull=" $fg_bold[magenta]↓$commits_behind$fg_bold[$fgclr]"; fi
+    if [[ $has_diverged == false && $commits_behind -gt 0 ]]; then to_pull=" $fg_no_bold[magenta]↓$commits_behind$fg_no_bold[$fgclr]"; fi
 
     if [[ -e "${repo_path}/BISECT_LOG" ]]; then
       mode=" <B>"
@@ -279,7 +280,7 @@ prompt_git() {
 
     prompt_segment $bgclr $fgclr
 
-    print -n "%{$fg_bold[$fgclr]%}${ref/refs\/heads\//$PL_BRANCH_CHAR $upstream_prompt}${mode}$to_push$to_pull$clean$tagged$stashed$untracked$modified$deleted$added$ready_commit%{$fg_no_bold[$fgclr]%}"
+    print -n "%{$fg_no_bold[$fgclr]%}${ref/refs\/heads\//$PL_BRANCH_CHAR $upstream_prompt}${mode}$to_push$to_pull$clean$tagged$stashed$untracked$modified$deleted$added$ready_commit%{$fg_no_bold[$fgclr]%}"
   fi
 }
 
@@ -320,7 +321,7 @@ prompt_hg() {
 
 # Dir: current working directory
 prompt_dir() {
-  prompt_segment cyan white "%{$fg_bold[white]%}%~%{$fg_no_bold[white]%}"
+  prompt_segment cyan white "%{$fg_no_bold[white]%}%~%{$fg_no_bold[white]%}"
 }
 
 # Virtualenv: current working virtualenv
@@ -332,7 +333,7 @@ prompt_virtualenv() {
 }
 
 prompt_time() {
-  prompt_segment blue white "%{$fg_bold[white]%}%D{%a %e %b - %H:%M}%{$fg_no_bold[white]%}"
+  prompt_segment blue white "%{$fg_no_bold[white]%}%D{%a %e %b - %H:%M}%{$fg_no_bold[white]%}"
 }
 
 # Status:
@@ -349,17 +350,22 @@ prompt_status() {
   [[ -n "$symbols" ]] && prompt_segment black default "$symbols"
 }
 
+prompt_aosp_lunch() {
+  printenv TARGET_PRODUCT >/dev/null && prompt_segment blue white "%{$fg_no_bold[white]%}$TARGET_PRODUCT-$TARGET_BUILD_VARIANT%{$fg_no_bold[white]%}"
+}
+
 ## Main prompt
 build_prompt() {
   RETVAL=$?
   print -n "\n"
-  prompt_status
-  prompt_battery
-  prompt_time
-  prompt_virtualenv
+  # prompt_status
+  # prompt_battery
+  # prompt_time
+  prompt_aosp_lunch
+  # prompt_virtualenv
   prompt_dir
-  prompt_git
-  prompt_hg
+  # prompt_git
+  # prompt_hg
   prompt_end
   CURRENT_BG='NONE'
   print -n "\n"
