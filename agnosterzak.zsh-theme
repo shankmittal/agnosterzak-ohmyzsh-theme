@@ -76,6 +76,10 @@ prompt_context() {
   fi
 }
 
+prompt_simple() {
+    prompt_segment magenta white
+}
+
 # Battery Level
 prompt_battery() {
   HEART='♥ '
@@ -351,7 +355,7 @@ prompt_status() {
 }
 
 prompt_aosp_lunch() {
-  printenv TARGET_PRODUCT >/dev/null && prompt_segment blue white "%{$fg_no_bold[white]%}$TARGET_PRODUCT-$TARGET_BUILD_VARIANT%{$fg_no_bold[white]%}"
+  printenv TARGET_PRODUCT >/dev/null && prompt_segment green white "%{$fg_no_bold[white]%}$TARGET_PRODUCT-$TARGET_BUILD_VARIANT%{$fg_no_bold[white]%}"
 }
 
 ## Main prompt
@@ -360,16 +364,17 @@ build_prompt() {
   print -n "\n"
   # prompt_status
   # prompt_battery
-  # prompt_time
-  prompt_aosp_lunch
+  prompt_time
   # prompt_virtualenv
   prompt_dir
+  prompt_aosp_lunch
   # prompt_git
   # prompt_hg
   prompt_end
   CURRENT_BG='NONE'
   print -n "\n"
-  prompt_context
+  # prompt_context
+  prompt_simple
   prompt_end
 }
 
