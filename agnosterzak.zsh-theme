@@ -325,7 +325,13 @@ prompt_hg() {
 
 # Dir: current working directory
 prompt_dir() {
-  prompt_segment cyan grey "%{$fg_no_bold[grey]%}%~%{$fg_no_bold[grey]%}"
+  rwd=$(pwd -P)
+  if [[ -z "$ANDROID_BUILD_TOP" || "$rwd" == "$ANDROID_BUILD_TOP" || $rwd/ != $ANDROID_BUILD_TOP/* ]]; then
+    prompt_segment cyan grey "%{$fg_no_bold[grey]%}%~%{$fg_no_bold[grey]%}"
+   else
+    prompt_segment cyan grey "%{$fg_no_bold[grey]%}$ANDROID_BUILD_TOP%{$fg_no_bold[grey]%}"
+    prompt_segment magenta grey "%{$fg_no_bold[grey]%}$(realpath --relative-to=$ANDROID_BUILD_TOP $PWD)%{$fg_no_bold[grey]%}"
+  fi
 }
 
 # Virtualenv: current working virtualenv
